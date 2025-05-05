@@ -12,7 +12,6 @@ export class AddressService {
   ) {}
 
   async createAddress(latitude: number, longitude: number) {
-    //Reverse Geocoding orqali manzil avtomatik ajratib olindi:
     let description = '';
     try {
       const res = await axios.get(

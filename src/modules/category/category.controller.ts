@@ -1,8 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CheckAuthGuard } from 'src/guard/check-auth.guard';
+import { CheckRoleGuard } from 'src/guard/check-role.guard';
+import { Roles } from 'src/decorator/roles-decorator';
+import { UserRoles } from 'src/utils/user-role';
 
 @ApiTags('Category')
 @Controller('category')
@@ -10,6 +14,9 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(CheckAuthGuard,CheckRoleGuard)
+  @Roles(UserRoles.ADMIN)
   @ApiOperation({summary: 'Category yaratish'})
   @ApiResponse({status: 201,description: 'Category succesfully created'})
   @ApiResponse({status:400,description: 'Bad request: Validation error!'})
@@ -42,6 +49,9 @@ export class CategoryController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @Roles(UserRoles.ADMIN)
+  @UseGuards(CheckAuthGuard,CheckRoleGuard)
   @ApiOperation({summary: 'Category tahrirlash'})
   @ApiResponse({status: 201,description: 'Category succesfully updated'})
   @ApiResponse({status:400,description: 'Bad request: Validation error!'})
@@ -58,6 +68,12 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(CheckAuthGuard,CheckRoleGuard)
+  @Roles(UserRoles.ADMIN)
+  @ApiOperation({summary: 'Category ni ochirish'})
+  @ApiResponse({status: 200,description: 'Category succesfully deleted'})
+  @ApiResponse({status:404,description: 'Category not found'})
   remove(@Param('id') id: string) {
     return this.categoryService.remove(+id);
   }

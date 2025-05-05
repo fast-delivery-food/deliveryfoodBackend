@@ -46,7 +46,7 @@ export class ProductService {
     if(!findOne){
       throw new NotFoundException(`ProductID with ${findOne} not found`)
     }
-    let uploadImg;
+    let uploadImg:any;
     if(findOne.image){
       await this.uploadService.removeFile({fileName: findOne.image})
        const uploadImage = await this.uploadService.uploadFile({
@@ -86,6 +86,17 @@ export class ProductService {
       take:limit,
       skip: offset,
     });
+  }
+  
+
+  async findByCategoryId(categoryId: number) {
+    const findOne = await this.productRepository.find({
+      where: { category:{ id: categoryId} },
+    });
+    if(!findOne){
+      throw new NotFoundException("Topilmadi!")
+    }
+    return findOne
   }
   
   

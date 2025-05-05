@@ -1,5 +1,6 @@
+import { Cart } from "src/modules/cart/entities/cart.entity";
 import { Category } from "src/modules/category/entities/category.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'product' })
 export class Product {
@@ -21,8 +22,12 @@ export class Product {
     @Column({ type: 'boolean', name: 'is_active', default: true })
     is_active: boolean
 
-    @ManyToOne(() => Category, (category) => category.products, { onDelete: 'CASCADE',nullable:true })
-    @JoinColumn({ name: 'category_id' }) 
+    @ManyToOne(() => Category, (category) => category.products, { onDelete: 'CASCADE', nullable: true })
+    @JoinColumn({ name: 'category_id' })
     category: Category;
+
+    @OneToMany(() => Cart, (cart) => cart.product)
+    carts: Cart[];
+
 
 }
